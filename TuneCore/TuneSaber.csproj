@@ -57,31 +57,6 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Google.Apis">
-      <HintPath>$(BeatSaberDir)\Libs\Google.Apis.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Google.Apis.Auth">
-      <HintPath>$(BeatSaberDir)\Libs\Google.Apis.Auth.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Google.Apis.Core">
-      <HintPath>$(BeatSaberDir)\Libs\Google.Apis.Core.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices">
-      <HintPath>$(BeatSaberDir)\Libs\Google.Apis.PlatformServices.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Google.Apis.YouTube.v3">
-      <HintPath>$(BeatSaberDir)\Libs\Google.Apis.YouTube.v3.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="HMLib">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Private>False</Private>
@@ -102,9 +77,9 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="SpotifyAPI.Web">
-      <HintPath>$(BeatSaberDir)\Libs\SpotifyAPI.Web.dll</HintPath>
+    <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\SpotifyAPI.Web.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SpotifyAPI.Web.Auth">

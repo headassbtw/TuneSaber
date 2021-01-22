@@ -65,7 +65,7 @@ namespace TuneSaber.Core.Spotify
                 Plugin.Log.Info("config created");
                 var tokenResponse = await new OAuthClient(config).RequestToken(
                     new AuthorizationCodeTokenRequest(
-                        "8f6a2395551c45588496c7e25a0e2311", "my code would be here but i removed it because it's supposed to be private apparently?", response.Code, urii)
+                        "8f6a2395551c45588496c7e25a0e2311", "81fa66620ab74ae7b4b796425e958b6f", response.Code, urii)
                     );
                 Plugin.Log.Info("logged in");
                 spotify = new SpotifyClient(tokenResponse.AccessToken);
