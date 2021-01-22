@@ -1,0 +1,96 @@
+﻿<!--suppress CheckTagEmptyBody -->
+<vertical child-control-height='false' child-expand-width='false'>
+	<horizontal bg='panel-top' pad-top='-1'>
+		<text text='Using: ' pref-width='20'/>
+		<text text='select a playlist from the main menu' pref-width='80' id='pl-name' />
+		<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' id='playlist-image'/>
+	</horizontal>	
+	<horizontal spacing='0'>
+
+		<!--artists list panel-->
+		<vertical>
+			<vertical pad-left='0' pad-right='0'  pref-width='40' pref-height='10' id='top-left'>
+				<horizontal pad-left='1' pad-right='1' horizontal-fit='PreferredSize'>
+					<page-button event-click='ArtistList#PageUp' direction='Up' pref-width='10'/>
+					<text text='Artists' align='Center' font-size='8'/>
+					<page-button event-click='ArtistList#PageDown' direction='Down' pref-width='10'/>
+				</horizontal>
+			</vertical>
+			<vertical pad-left='2' pad-right='2' pad-top='1' pad-bottom='0' pref-width='40' id='artists-tab' pref-height='40'>
+				<list id='ArtistList' expand-cell='true' select-cell='artistSelect' refresh-visuals='bruh-moment' cell-size='10' list-width='4.0' visible-cells='4'/>
+				<!--<vertical anchor-min-x='0' anchor-min-y='0' anchor-max-x='1' anchor-max-y='1' size-delta-x='0' size-delta-y='0'>
+					
+				</vertical>-->
+				<!--<image id='artists-background-image' anchor-min-x='0' anchor-min-y='0' anchor-max-x='0' anchor-max-y='0' size-delta-x='0' size-delta-y='0'>
+
+				</image>-->
+			</vertical>
+		</vertical>
+		
+		<!--song info panel-->
+		<vertical>
+			<vertical pad-left='0' pad-right='0'  pref-width='40' pref-height='10' id='top-middle'>
+				<button text='Follow Artist' on-click='follow-artist' id='follow-button'/>
+			</vertical>
+			<vertical pad-left='2' pad-right='2' pad-top='1' pad-bottom='0' pref-width='40' id='song-tab' pref-height='40'>
+				<bg>
+					<image id='song-background-image' anchor-min-x='0' anchor-min-y='0' anchor-max-x='1' anchor-max-y='1' size-delta-x='0' size-delta-y='0' gradient='true'>
+						<vertical>
+							<horizontal>
+								<text text=''/>
+							</horizontal>
+							<horizontal>
+								<text text=''/>
+							</horizontal>
+							<horizontal>
+								<text text=''/>
+							</horizontal>
+							<horizontal>
+								<vertical>
+									<horizontal>
+										<text id='songtext' text='get bamboozled' font-size='5'/>
+									</horizontal>
+									<horizontal>
+										<text id='songsubtext' text='get bamboozled' font-size='4'/>
+									</horizontal>
+									<horizontal>
+										<text id='songsubsubtext' text='get bamboozled' font-size='3'/>
+									</horizontal>
+									<horizontal>
+										<clickable-text id='songartist' text='or not' default-color='#7777FF' highlight-color='#4444FF' font-size='5'/>
+									</horizontal>
+								</vertical>
+							</horizontal>
+						</vertical>
+					</image>
+				</bg>
+			</vertical>
+		</vertical>
+		
+		<!--options panel-->
+		<vertical>
+			<vertical pad-left='0' pad-right='0' pref-width='15' pref-height='10'>
+				<text text=''/>
+			</vertical>
+			<vertical pad-left='0' pad-right='0' pad-top='3' pad-bottom='0' bg='round-rect-panel'>
+				<horizontal>
+					<button on-click='refresh-login' text='re-log' hover-hint='refreshes the login(will open browser)'/>
+				</horizontal>
+				<horizontal>
+					<button on-click='buttonaddfire' text='debug' id='addselected' hover-hint='add selected song to playlist (but not remove it, fuck the method of removing it)'/>
+				</horizontal>
+				<horizontal>
+					<button on-click='buttonlikefire' text='' id='likeselected' hover-hint='like/dislike song' pref-width='6' pref-height='6' >
+						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='like-image'/>
+					</button>
+				</horizontal>
+				<horizontal>
+					<button text='' enabled='false'/>
+				</horizontal>
+				<horizontal>
+					<button text='' enabled='false'/>
+				</horizontal>
+			</vertical>
+		</vertical>
+	</horizontal>
+</vertical>

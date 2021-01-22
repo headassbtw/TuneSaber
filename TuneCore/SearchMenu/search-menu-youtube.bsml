@@ -1,0 +1,56 @@
+﻿<!--suppress CheckTagEmptyBody -->
+	<vertical child-control-height='false'>
+		<horizontal bg='panel-top'>
+			<dropdown-list-setting text='Playlist:' value='list-choice' choices='list-options' on-change='playlist-changed' pref-width='90' hover-hint='choose which playlist to add the song to, currently WIP'/>
+		</horizontal>
+		<horizontal>
+			<vertical align='left' bg='round-rect-panel' pad-left='6' pad-right='6' pad-top='3' pad-bottom='3'>
+				<button on-click='button1fire' text='' id='button1'>
+					<horizontal>
+						<vertical>
+							<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' source='~source-url1'/>
+						</vertical>
+						<vertical pad-left='1'>
+							<text id='songtext1' text='Pepega'/>
+							<text id='songartist1' text='mm'/>
+						</vertical>
+					</horizontal>
+				</button>
+				<button on-click='button2fire' text='' id='button2'>
+					<horizontal>
+						<vertical>
+							<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' id='image1'/>
+						</vertical>
+						<vertical pad-left='1'>
+							<text id='songtext2' text='Pepega'/>
+							<text id='songartist2' text='mm'/>
+						</vertical>
+					</horizontal>
+				</button>
+				<button on-click='button3fire' text='' id='button3'>
+					<horizontal>
+						<vertical>
+							<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' source='~source-url3'/>
+						</vertical>
+						<vertical pad-left='1'>
+							<text id='songtext3' text='Pepega'/>
+							<text id='songartist3' text='mm'/>
+						</vertical>
+					</horizontal>
+				</button>
+			</vertical>
+			<vertical align='right' bg='round-rect-panel' pad-left='6' pad-right='6' pad-top='3' pad-bottom='3'>
+				<horizontal>
+					<text text='Selected:'/>
+				</horizontal>
+				<horizontal>
+					<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' source='~selectedurl'/>
+				</horizontal>
+				<text text='official' id='goodorbadtext'/>
+				<horizontal>
+					<button text='Like' id='likeselected' hover-hint='like selected song, currently not implemented'></button>
+					<button on-click='buttonaddfire' text='Add' id='addselected' hover-hint='add selected song to playlist (not in this build tho!)'></button>
+				</horizontal>
+			</vertical>
+		</horizontal>
+	</vertical>
