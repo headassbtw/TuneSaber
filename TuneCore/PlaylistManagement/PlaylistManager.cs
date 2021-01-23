@@ -29,11 +29,8 @@ namespace TuneSaber.ViewControllers
         [UIComponent("PlaylistList")] public CustomListTableData customListTableData;
 
         [UIComponent("playlist-image")] private Image PlaylistImage = null!;
-        [UIComponent("playlist-name")] public TextMeshProUGUI PlaylistName;
         public string PLName = "";
         public string ImageURL = "";
-        [UIComponent("playlist-owner")] public TextMeshProUGUI PlaylistOwner;
-        [UIComponent("playlist-track-count")] public TextMeshProUGUI PlaylistTrackCount;
         [UIComponent("playlist-bg")] public VerticalLayoutGroup PlaylistBG;
         [UIValue("playlist-bg-color")] public Color PLBGColor;
 
@@ -45,14 +42,11 @@ namespace TuneSaber.ViewControllers
             Configuration.PluginConfig.Instance.PlaylistID = Core.Spotify.Interaction.playlists.ElementAt(row).Id.ToString();
 
             var localPl = Core.Spotify.Interaction.playlists.ElementAt(row);
-            PLName = localPl.Name.ToString();
             ImageURL = localPl.Images.ElementAt(0).Url.ToString();
-            SearchMenu.instance.PlaylistImage.SetImage(ImageURL);
-            SearchMenu.instance.PLName.text = PLName;
+            //SearchMenu.instance.PlaylistImage.SetImage(ImageURL);
+            //SearchMenu.instance.PLName.text = PLName;
             Plugin.Log.Notice("Cached playlist " + localPl.Name);
             PlaylistImage.SetImage(localPl.Images.ElementAt(0).Url.ToString());
-            PlaylistOwner.text = localPl.Owner.DisplayName.ToString();
-            PlaylistTrackCount.text = localPl.Tracks.Items.Count.ToString() + " Tracks.";
         }
         
 

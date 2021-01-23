@@ -2,10 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
   "id": "TuneSaber",
   "name": "TuneSaber",
-  "author": "",
-  "version": "0.0.1",
+  "author": "headassbtw",
+  "version": "1.0.0",
   "description": "",
-  "gameVersion": "1.12.2",
+  "gameVersion": "1.13.2",
   "dependsOn": {
     "BSIPA": "^4.0.5"
   },

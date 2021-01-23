@@ -29,18 +29,22 @@ namespace TuneSaber
         public static Material RoundedEdge = null!;
         public static List<SpotifyAPI.Web.FullArtist> ars = new List<SpotifyAPI.Web.FullArtist>();
         public static SpotifyAPI.Web.FullArtist CurrentArtist = null!;
-        [UIComponent("pl-name")] public TextMeshProUGUI PLName = null!;
+        /*[UIComponent("pl-name")] public TextMeshProUGUI PLName = null!;
+        [UIComponent("playlist-image")] public Image PlaylistImage = null!;*/
         [UIComponent("songtext")] private TextMeshProUGUI SongText = null!;
         [UIComponent("songsubtext")] private TextMeshProUGUI SongSubText = null!;
         [UIComponent("songsubsubtext")] private TextMeshProUGUI SongSubSubText = null!;
         [UIComponent("songartist")] private TextMeshProUGUI SongArtist = null!;
         [UIComponent("like-image")] private Image LikeImage = null!;
+        [UIComponent("add-image")] private Image AddImage = null!;
+        [UIComponent("relog-image")] public Image RelogImage = null!;
         [UIComponent("song-background-image")] private ImageView SongBGImage = null!;
         //[UIComponent("artists-background-image")] private ImageView ArtistsBGImage = null!;
-        [UIComponent("playlist-image")] public Image PlaylistImage = null!;
+        
         [UIComponent("likeselected")] private Button LikeButton;
         [UIComponent("addselected")] private Button AddButton;
         [UIComponent("follow-button")] private Button FollowButton;
+        [UIComponent("relog-button")] public Button RelogButton;
         [UIValue("source-url1")] public string Image1 = "";
         [UIValue("selectedurl")] public string SelectedURL = "";
         [UIComponent("song-tab")] public VerticalLayoutGroup SongTab;
@@ -123,13 +127,11 @@ namespace TuneSaber
             {
                 case true:
                     await Interaction.DislikeSong(currentID);
-                    //LikeButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.red;
                     LikeImage.SetImage("TuneSaber.Icons.heart.png");
                     LikeImage.color = Color.red;
                     break;
                 case false:
                     await Interaction.LikeSong(currentID);
-                    //LikeButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.green;
                     LikeImage.SetImage("TuneSaber.Icons.heart_filled.png");
                     LikeImage.color = Color.green;
                     break;
@@ -140,17 +142,10 @@ namespace TuneSaber
             switch (await Interaction.IsSongInPlaylist(CurrentTrack.Id, Configuration.PluginConfig.Instance.PlaylistID))
             {
                 case true:
-                    //await Interaction.RemoveFromPlaylist(CurrentTrack, Configuration.PluginConfig.Instance.PlaylistID);
-                    //AddButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.red;
-                    //AddButton.SetButtonText("Add");
-                    //await Interaction.IsSongInPlaylist(CurrentTrack.Id, Configuration.PluginConfig.Instance.PlaylistID);
                     break;
                 case false:
                     await Interaction.AddToPlaylist(CurrentTrack, Configuration.PluginConfig.Instance.PlaylistID);
-                    AddButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.green;
-                    AddButton.SetButtonText("oof");
                     AddButton.interactable = false;
-                    //await Interaction.IsSongInPlaylist(CurrentTrack.Id, Configuration.PluginConfig.Instance.PlaylistID);
                     break;
             }
         }
@@ -233,7 +228,6 @@ namespace TuneSaber
 
         private void BSEvents_levelSelected(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
         {
-            customListTableData.data.Clear();
             Reset();
             
             if (arg2.songSubName.Contains(" remix") || arg2.songSubName.Contains(" Remix") || arg2.songSubName.Contains(" mix") || arg2.songSubName.Contains(" Mix"))
@@ -258,9 +252,10 @@ namespace TuneSaber
             var track = await Interaction.GetQuery(query, max);
             if (track == null)
             {
-                Plugin.Log.Info("shit");
+                Plugin.Log.Info("No Results");
                 await FillSongInfo("No Results.", "");
                 SongBGImage.SetImage("");
+                currentTitle = "sdaijfmchiasoduvbfiusadfv";
                 return false;
             }
             else
@@ -272,6 +267,7 @@ namespace TuneSaber
                     SongBGImage.SetImage(track.Album.Images.ElementAt(0).Url.ToString());
                     SongBGImage.color0 = Color.clear;
                     SongBGImage.color1 = Color.white;
+                    currentURL = track.ExternalUrls.Values.ElementAt(0);
                     //SongBGImage.SetField("gradient", true, typeof(bool));
                     //Plugin.Log.Notice("gradient set");
                     string at = "";
@@ -308,6 +304,7 @@ namespace TuneSaber
                     }
                     #endregion
                     #region add/like buttons
+                    bool added = true;
                     try
                     {
                         switch (await Interaction.IsSongLiked(currentID))
@@ -328,13 +325,13 @@ namespace TuneSaber
                         switch (await Interaction.IsSongInPlaylist(currentID, Configuration.PluginConfig.Instance.PlaylistID))
                         {
                             case true:
-                                AddButton.SetButtonText("oof");
-                                AddButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.green;
+                                AddImage.color = Color.gray;
                                 AddButton.interactable = false;
+                                added = true;
                                 break;
                             case false:
-                                AddButton.SetButtonText("Add");
-                                AddButton.transform.Find("Underline").gameObject.GetComponent<Image>().color = Color.red;
+                                AddImage.color = Color.white;
+                                added = false;
                                 break;
                         }
                     }
@@ -347,6 +344,14 @@ namespace TuneSaber
                     GimmieArtists(ars);
                     await CheckFollow();
                     EnableButtons();
+                    switch (added)
+                    {
+                        case true:
+                            AddButton.interactable = false;
+                            break;
+                        case false:
+                            break;
+                    }
                     return true;
                 }
                 catch(Exception e) { Plugin.Log.Critical(e.ToString()); return false; }
@@ -368,7 +373,7 @@ namespace TuneSaber
             try
             {
                 customListTableData.data.Clear();
-                Plugin.Log.Info("fuck you " + artists.Count + " times.");
+                Plugin.Log.Info("found " + artists.Count + " artists.");
                 foreach (var artist in artists)
                 {
                     Plugin.Log.Notice("fetching artist " + artist.Name);
@@ -394,6 +399,9 @@ namespace TuneSaber
         [UIAction("#post-parse")]
         public void PostParse()
         {
+            Reset();
+            RelogImage.SetImage("TuneSaber.Icons.relog.png");
+            AddImage.SetImage("TuneSaber.Icons.AddToPlaylist.png");
             SongBGImage.color0 = new Color(1, 1, 1, 0.2f);
             SongBGImage.color1 = new Color(1, 1, 1, 0.8f);
             SongBGImage.SetField("_gradient", true);
@@ -431,10 +439,14 @@ namespace TuneSaber
 
         private void Reset()
         {
+            customListTableData.data.Clear();
+            customListTableData.tableView.ReloadData();
             //CurrentArtists.Clear();
             SongBGImage.SetImage("TuneSaber.Icons.YEP.png");
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             ColorButton(LikeButton, Color.clear);
+            ColorButton(AddButton, Color.clear);
+            ColorButton(RelogButton, Color.clear);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             string L = "";
             SongText.text = L;
@@ -458,11 +470,14 @@ namespace TuneSaber
         }
         private void DisableButtons()
         {
+            
             FollowButton.interactable = false;
             LikeButton.interactable = false;
             AddButton.interactable = false;
+            AddImage.color = Color.clear;
             LikeImage.color = Color.clear;
-            LikeButton.transform.Find("BG").gameObject.GetComponent<Image>().color = Color.clear;
+            ColorButton(LikeButton, Color.clear);
+            ColorButton(AddButton, Color.clear);
         }
         private void EnableButtons()
         {

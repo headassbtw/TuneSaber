@@ -60,13 +60,13 @@ namespace TuneSaber
             string title = SearchMenu.currentTitle;
             string artist = SearchMenu.currentArtist;
             string URL = SearchMenu.currentURL;
-            if(SearchMenu.currentTitle.Equals("nopeee"))
+            if(SearchMenu.currentTitle.Equals("sdaijfmchiasoduvbfiusadfv"))
             {
                 return "The current song is not on spotify.";
             }
             else
             {
-                string Response = "/me is currently playing: %T by: %A, %U";
+                string Response = Configuration.PluginConfig.Instance.SongCommandReponse;
                 Response = Response.Replace("%T", title);
                 Response = Response.Replace("%A", artist);
                 Response = Response.Replace("%U", URL);
@@ -81,7 +81,7 @@ namespace TuneSaber
 
             if ((bool)(playlist.Public = true))
             {
-                string Response = "/me is currently using the playlist %N, created by %O, which has %T items";
+                string Response = Configuration.PluginConfig.Instance.PlaylistCommandReponse;
                 Response.Replace("%N", playlist.Name);
                 Response.Replace("%O", playlist.Owner.DisplayName);
                 Response.Replace("%T", playlist.Tracks.Items.Count.ToString());

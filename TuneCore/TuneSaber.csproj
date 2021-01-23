@@ -45,7 +45,7 @@
     <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\EmbedIO.dll</HintPath>
-		<CopyLocal>True</CopyLocal>
+      <CopyLocal>True</CopyLocal>
     </Reference>
     <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -83,12 +83,12 @@
     <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\SpotifyAPI.Web.dll</HintPath>
-		<CopyLocal>True</CopyLocal>
+      <CopyLocal>True</CopyLocal>
     </Reference>
     <Reference Include="SpotifyAPI.Web.Auth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\SpotifyAPI.Web.Auth.dll</HintPath>
-		<CopyLocal>True</CopyLocal>
+      <CopyLocal>True</CopyLocal>
     </Reference>
     <Reference Include="Swan.Lite, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30c707c872729fff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -200,9 +200,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="ILRepack">
-      <Version>2.0.18</Version>
-    </PackageReference>
     <PackageReference Include="ILRepack.MSBuild.Task">
       <Version>2.0.13</Version>
     </PackageReference>
@@ -231,6 +228,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="Icons\relog.png" />
     <Content Include="internalize_excludes.txt" />
     <Content Include="Libs\EmbedIO.dll" />
     <Content Include="Libs\SpotifyAPI.Web.Auth.dll" />

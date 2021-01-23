@@ -65,7 +65,7 @@ namespace TuneSaber.Core.Spotify
                 Plugin.Log.Info("config created");
                 var tokenResponse = await new OAuthClient(config).RequestToken(
                     new AuthorizationCodeTokenRequest(
-                        "8f6a2395551c45588496c7e25a0e2311", "not gving you my key", response.Code, urii)
+                        "8f6a2395551c45588496c7e25a0e2311", "imagine wanting my key KEKW", response.Code, urii)
                     );
                 Plugin.Log.Info("logged in");
                 spotify = new SpotifyClient(tokenResponse.AccessToken);
@@ -74,7 +74,7 @@ namespace TuneSaber.Core.Spotify
             {
                 Plugin.Log.Notice("Initial login error \n");
                 Plugin.Log.Critical(e.Message.ToString());
-                
+                SearchMenu.instance.RelogImage.color = Color.red;
             }
             await GetPlaylists(99);
         }

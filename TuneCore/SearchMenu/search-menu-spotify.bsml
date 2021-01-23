@@ -1,8 +1,8 @@
 ﻿<!--suppress CheckTagEmptyBody -->
 <vertical child-control-height='false' child-expand-width='false'>
-	<horizontal bg='panel-top' pad-top='-1'>
-		<text text='Using: ' pref-width='20'/>
-		<text text='select a playlist from the main menu' pref-width='80' id='pl-name' />
+	<horizontal pad-top='-1'>
+		<text text=' ' pref-width='20'/>
+		<text text='' pref-width='80' id='pl-name' />
 		<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' id='playlist-image'/>
 	</horizontal>	
 	<horizontal spacing='0'>
@@ -48,16 +48,16 @@
 							<horizontal>
 								<vertical>
 									<horizontal>
-										<text id='songtext' text='get bamboozled' font-size='5'/>
+										<text id='songtext' text=' ' font-size='5'/>
 									</horizontal>
 									<horizontal>
-										<text id='songsubtext' text='get bamboozled' font-size='4'/>
+										<text id='songsubtext' text=' ' font-size='4'/>
 									</horizontal>
 									<horizontal>
-										<text id='songsubsubtext' text='get bamboozled' font-size='3'/>
+										<text id='songsubsubtext' text=' ' font-size='3'/>
 									</horizontal>
 									<horizontal>
-										<clickable-text id='songartist' text='or not' default-color='#7777FF' highlight-color='#4444FF' font-size='5'/>
+										<text id='songartist' text=' ' font-size='5'/>
 									</horizontal>
 								</vertical>
 							</horizontal>
@@ -72,12 +72,16 @@
 			<vertical pad-left='0' pad-right='0' pref-width='15' pref-height='10'>
 				<text text=''/>
 			</vertical>
-			<vertical pad-left='0' pad-right='0' pad-top='3' pad-bottom='0' bg='round-rect-panel'>
+			<vertical pad-left='0' pad-right='0' pad-top='3' pad-bottom='0' >
 				<horizontal>
-					<button on-click='refresh-login' text='re-log' hover-hint='refreshes the login(will open browser)'/>
+					<button on-click='refresh-login' text='' id='relog-button' hover-hint='refreshes the login(will open browser)'>
+						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='relog-image'/>
+					</button>
 				</horizontal>
 				<horizontal>
-					<button on-click='buttonaddfire' text='debug' id='addselected' hover-hint='add selected song to playlist (but not remove it, fuck the method of removing it)'/>
+					<button on-click='buttonaddfire' text='' id='addselected' hover-hint='add selected song to playlist (but not remove it)'>
+						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='add-image'/>
+					</button>
 				</horizontal>
 				<horizontal>
 					<button on-click='buttonlikefire' text='' id='likeselected' hover-hint='like/dislike song' pref-width='6' pref-height='6' >
@@ -85,10 +89,10 @@
 					</button>
 				</horizontal>
 				<horizontal>
-					<button text='' enabled='false'/>
+					<button text='' interactable='false'/>
 				</horizontal>
 				<horizontal>
-					<button text='' enabled='false'/>
+					<button text='' interactable='false'/>
 				</horizontal>
 			</vertical>
 		</vertical>

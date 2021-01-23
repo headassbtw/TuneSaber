@@ -5,11 +5,8 @@
 			<page-button event-click='PlaylistList#PageDown' direction='Down' />
 	</vertical>
 
-	<vertical bg='round-rect-panel' id='playlist-bg'>
+	<vertical id='playlist-bg'>
 		<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' id='playlist-image'/>
-		<text id='playlist-title' size='12'/>
-		<text id='playlist-owner' size='10'/>
-		<text id='playlist-track-count' size='7'/>
 	</vertical>
 </horizontal>
 
