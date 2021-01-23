@@ -41,7 +41,6 @@ namespace TuneSaber
         public void InitWithConfig(Config conf)
         {
             SearchMenu.instance.AddTab();
-            TuneSaber.Views.UICreator.CreateMenu();
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
         }
@@ -53,6 +52,7 @@ namespace TuneSaber
 
             var es = new ExclamationSong();
             es.Start();
+            Views.UICreator.CreateMenu();
             BS_Utils.Utilities.BSEvents.OnLoad();
             Log.Debug("OnApplicationStart");
             new GameObject("TuneSaberController").AddComponent<TuneSaberController>();

@@ -8,6 +8,7 @@ namespace TuneSaber.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
+        public virtual bool Logging { get; set; } = true;
         public virtual string ChannelName { get; set; } = "headassbtw";
         public virtual string PlaylistID { get; set; } = "";
         public virtual int ChosenPlatform { get; set; } = 0;

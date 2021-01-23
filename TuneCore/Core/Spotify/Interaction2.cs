@@ -11,7 +11,7 @@ using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using UnityEngine.Networking;
 using UnityEngine;
-
+using EmbedIO;
 using UnityEngine.UI;
 
 
@@ -65,7 +65,7 @@ namespace TuneSaber.Core.Spotify
                 Plugin.Log.Info("config created");
                 var tokenResponse = await new OAuthClient(config).RequestToken(
                     new AuthorizationCodeTokenRequest(
-                        "8f6a2395551c45588496c7e25a0e2311", "81fa66620ab74ae7b4b796425e958b6f", response.Code, urii)
+                        "8f6a2395551c45588496c7e25a0e2311", "not gving you my key", response.Code, urii)
                     );
                 Plugin.Log.Info("logged in");
                 spotify = new SpotifyClient(tokenResponse.AccessToken);
@@ -221,13 +221,24 @@ namespace TuneSaber.Core.Spotify
         static public async Task RemoveFromPlaylist(FullTrack song, string playlistID)
         {
             var spotify = await GetMyFuckingAPIShit();
+            var playlists = await spotify.Playlists.GetItems(playlistID);
+            int pos = 0;
+            foreach (PlaylistTrack<IPlayableItem> traack in playlists.Items)
+            {
+                pos = playlists.Items.IndexOf(traack);
 
-            var request = new PlaylistRemoveItemsRequest();
+            }
             var item = new PlaylistRemoveItemsRequest.Item
             {
                 Uri = song.Uri
-            };
+                
+        };
+            item.Positions = new List<int>();
+            item.Positions.Add(pos);
+            List<SpotifyAPI.Web.PlaylistRemoveItemsRequest.Item> items = new List<PlaylistRemoveItemsRequest.Item>();
+            var request = new PlaylistRemoveItemsRequest();
             request.Tracks.Add(item);
+            
 
             await spotify.Playlists.RemoveItems(playlistID, request);
         }
@@ -270,6 +281,27 @@ namespace TuneSaber.Core.Spotify
             await spotify.Follow.Unfollow(ufr);
         }
 
+        static public async Task CreatePlaylist(string name,  bool pub, bool collab, string description = null)
+        {
+            var spotify = await GetMyFuckingAPIShit();
 
+            PlaylistCreateRequest plcr = new PlaylistCreateRequest(name);
+            if(description != null) { plcr.Description = description; }
+            plcr.Collaborative = collab;
+            plcr.Public = pub;
+            var user = await spotify.UserProfile.Current();
+            await spotify.Playlists.Create(user.Id, plcr);
+        }
+        static public async Task EditPlaylist(string id, string name, bool pub, bool collab, string description = null)
+        {
+            var spotify = await GetMyFuckingAPIShit();
+
+            var plcdr = new PlaylistChangeDetailsRequest();
+            plcdr.Name = name;
+            if(description != null) { plcdr.Description = description; }
+            plcdr.Collaborative = collab;
+            plcdr.Public = pub;
+            await spotify.Playlists.ChangeDetails(id, plcdr);
+        }
     }
 }

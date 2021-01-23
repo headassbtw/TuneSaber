@@ -15,10 +15,10 @@ namespace TuneSaber
     {
         public string Usernamequestionmark = "";
         public string channel = Configuration.PluginConfig.Instance.ChannelName;
-        public ChatCoreInstance streamCore = ChatCoreInstance.Create();
+        //public ChatCoreInstance streamCore = ChatCoreInstance.Create();
         public void Start()
         {
-            streamCore = ChatCoreInstance.Create();
+            var streamCore = ChatCoreInstance.Create();
             var streamingService = streamCore.RunAllServices();
             var twitchService = streamingService.GetTwitchService();
             streamingService.OnLogin += StreamingService_OnLogin;
