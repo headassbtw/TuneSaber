@@ -13,12 +13,15 @@ namespace TuneSaber.Views
     {
         private PlaylistViewController _playlistViewController;
         private TwitchViewController _twitchViewController;
+        private PlaybackViewController _playbackViewController;
         public void Awake()
         {
             if (!_playlistViewController)
                 _playlistViewController = BeatSaberUI.CreateViewController<PlaylistViewController>();
-            /*if (!_twitchViewController)
-                _twitchViewController = BeatSaberUI.CreateViewController<TwitchViewController>();*/
+            if (!_playbackViewController)
+                _playbackViewController = BeatSaberUI.CreateViewController<PlaybackViewController>();
+            if (!_twitchViewController)
+                _twitchViewController = BeatSaberUI.CreateViewController<TwitchViewController>();
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -29,7 +32,7 @@ namespace TuneSaber.Views
                 {
                     SetTitle("Playlists");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_playlistViewController);
+                    ProvideInitialViewControllers(_playlistViewController, _playbackViewController, _twitchViewController);
                 }
             }
             catch (Exception e)

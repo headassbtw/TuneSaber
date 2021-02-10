@@ -4,11 +4,11 @@
 		<text text=' ' pref-width='20'/>
 		<text text='' pref-width='80' id='pl-name' />
 		<image preserve-aspect='true' pad='1' pref-width='5' pref-height='5' id='playlist-image'/>
-	</horizontal>	
+	</horizontal>
 	<horizontal spacing='0'>
 
 		<!--artists list panel-->
-		<vertical>
+		<vertical id='artists-panel'>
 			<vertical pad-left='0' pad-right='0'  pref-width='40' pref-height='10' id='top-left'>
 				<horizontal pad-left='1' pad-right='1' horizontal-fit='PreferredSize'>
 					<page-button event-click='ArtistList#PageUp' direction='Up' pref-width='10'/>
@@ -18,14 +18,39 @@
 			</vertical>
 			<vertical pad-left='2' pad-right='2' pad-top='1' pad-bottom='0' pref-width='40' id='artists-tab' pref-height='40'>
 				<list id='ArtistList' expand-cell='true' select-cell='artistSelect' refresh-visuals='bruh-moment' cell-size='10' list-width='4.0' visible-cells='4'/>
-				<!--<vertical anchor-min-x='0' anchor-min-y='0' anchor-max-x='1' anchor-max-y='1' size-delta-x='0' size-delta-y='0'>
-					
-				</vertical>-->
-				<!--<image id='artists-background-image' anchor-min-x='0' anchor-min-y='0' anchor-max-x='0' anchor-max-y='0' size-delta-x='0' size-delta-y='0'>
-
-				</image>-->
 			</vertical>
 		</vertical>
+
+		<!--twitch panel-->
+		<vertical id='twitch-panel'>
+			<vertical pad-left='0' pad-right='0' pref-width='40' pref-height='10' id='top-left'>
+				<horizontal pad-left='1' pad-right='1' horizontal-fit='PreferredSize'>
+					<text text='Twitch' align='Center' font-size='8'/>
+				</horizontal>
+			</vertical>
+			<vertical pad-left='2' pad-right='2' pad-top='1' pad-bottom='0' pref-width='40' pref-height='40'>
+				<vertical pref-width='40'>
+					<horizontal pref-width='40'>
+						<text text='!song'/>
+						<bool-setting text='' value='song-bool' font-size='5' id='song-setting' apply-on-change='true' pref-width='20'/>
+					</horizontal>
+					<list-setting text=' ' value='song-perm-choice' choices='twitch-permission-choices' apply-on-change='true' pref-width='40'/>
+				</vertical>
+				<vertical pref-width='40'>
+					<horizontal pref-width='40'>
+						<text text='!playlist'/>
+						<bool-setting text='' value='playlist-bool' font-size='5' id='playlist-setting' apply-on-change='true' pref-width='40'/>
+					</horizontal>
+					<list-setting text=' ' value='playlist-perm-choice' choices='twitch-permission-choices' apply-on-change='true' pref-width='40'/>
+				</vertical>
+				<vertical pref-width='40'>
+					<text text='Admin Level'/>
+					<list-setting text=' ' value='admin-perm-choice' choices='twitch-permission-choices' apply-on-change='true' pref-width='40'/>
+				</vertical>
+				<button text ='Confirm' on-click='twitchConfirm'/>
+			</vertical>
+		</vertical>
+		
 		
 		<!--song info panel-->
 		<vertical>
@@ -69,9 +94,6 @@
 		
 		<!--options panel-->
 		<vertical>
-			<vertical pad-left='0' pad-right='0' pref-width='15' pref-height='10'>
-				<text text=''/>
-			</vertical>
 			<vertical pad-left='0' pad-right='0' pad-top='3' pad-bottom='0' >
 				<horizontal>
 					<button on-click='refresh-login' text='' id='relog-button' hover-hint='refreshes the login(will open browser)'>
@@ -79,7 +101,7 @@
 					</button>
 				</horizontal>
 				<horizontal>
-					<button on-click='buttonaddfire' text='' id='addselected' hover-hint='add selected song to playlist (but not remove it)'>
+					<button on-click='buttonaddfire' text='' id='addselected' hover-hint='~addbuttonhoverhint'>
 						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='add-image'/>
 					</button>
 				</horizontal>
@@ -89,10 +111,24 @@
 					</button>
 				</horizontal>
 				<horizontal>
-					<button text='' interactable='false'/>
+					<button on-click='addtoqueue' text='' id='queue-button' hover-hint='~queuehoverhint'>
+						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='queue-image'/>
+					</button>
 				</horizontal>
 				<horizontal>
-					<button text='' interactable='false'/>
+					<button on-click='twitch-settings' text='' id='twitch-button' hover-hint='twitch integration settings'>
+						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='twitch-image'/>
+					</button>
+				</horizontal>
+				<horizontal>
+					<button text=''>
+						
+					</button>
+				</horizontal>
+				<horizontal>
+					<button text='O' on-click='hide-twitch'>
+						
+					</button>
 				</horizontal>
 			</vertical>
 		</vertical>

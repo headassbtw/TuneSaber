@@ -1,14 +1,59 @@
-﻿<horizontal>
-	<vertical pad-bottom='12' pad-top='2' spacing='1'>
+﻿<vertical>
+	<horizontal>
+		<vertical pref-width="12">
+			<button text='Refresh' id='refbutton' click-event='get-playlists'>
+				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='refresh-image'/>
+			</button>
+			<button text='' click-event='delete-playlist' id='delete-button'>
+				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='delete-image'/>
+			</button>
+			<button text='Create' click-event='create-playlist'>
+				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='create-image'/>
+			</button>
+			<button text='' click-event='edit-playlist' id='edit-button'>
+				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='edit-image'/>
+			</button>
+		</vertical>
+		<vertical pad-bottom='12' pad-top='2' spacing='1' pref-width='80'>
 			<page-button event-click='PlaylistList#PageUp' direction='Up' />
 			<list id='PlaylistList' expand-cell='true' select-cell='playlistSelect' cell-size='10' list-width='5.0' visible-cells='5'/>
 			<page-button event-click='PlaylistList#PageDown' direction='Down' />
-	</vertical>
-
-	<vertical id='playlist-bg'>
-		<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' id='playlist-image'/>
-	</vertical>
-</horizontal>
+		</vertical>
+		<vertical id='playlist-bg'>
+			<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' id='playlist-image'/>
+		</vertical>
+	</horizontal>
+	<modal show-event="edit-playlist" hide-event="confirm" move-to-center="true" click-off-closes="true" size-delta-x="95" size-delta-y="70" font-size="5">
+		<vertical>
+			<horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
+				<text text='Edit Playlist' align='Center' font-size='8'/>
+			</horizontal>
+			<string-setting text='Name' value='epl-name' font-size='5' id='ename-setting'/>
+			<string-setting text='Description' value='epl-desc' font-size='5' id='edesc-setting'/>
+			<bool-setting text='Public' value='epublic-bool' font-size='5' id='epub-setting'/>
+			<bool-setting text='Collaborative' value='ecollab-bool' font-size='5' id='ecollab-setting'/>
+			<horizontal>
+				<button click-event="confirm" text="Cancel"/>
+				<button click-event="confirm" on-click="editPlaylist" text="Edit" />
+			</horizontal>
+		</vertical>
+	</modal>
+	<modal show-event="create-playlist" hide-event="confirm" move-to-center="true" click-off-closes="true" size-delta-x="95" size-delta-y="70" font-size="5">
+		<vertical>
+			<horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
+				<text text='Create Playlist' align='Center' font-size='8'/>
+			</horizontal>
+			<string-setting text='Name' value='cpl-name' font-size='5' id='cname-setting'/>
+			<string-setting text='Description' value='cpl-desc' font-size='5' id='cdesc-setting'/>
+			<bool-setting text='Public' value='cpublic-bool' font-size='5' id='cpub-setting'/>
+			<bool-setting text='Collaborative' value='ccollab-bool' font-size='5' id='ccollab-setting'/>
+			<horizontal>
+				<button click-event="confirm" text="Cancel"/>
+				<button click-event="confirm" on-click="createPlaylist" text="Create" />
+			</horizontal>
+		</vertical>
+	</modal>
+</vertical>
 
 
 

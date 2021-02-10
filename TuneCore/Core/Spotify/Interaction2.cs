@@ -22,9 +22,12 @@ namespace TuneSaber.Core.Spotify
         public static int playlistamount = 3;
         public static int playlistindex = 1;
         public static List<SpotifyAPI.Web.SimplePlaylist> playlists = new List<SimplePlaylist>();
+        public static PrivateUser CurrentUser = null!;
+        public static SpotifyAPI.Web.SimplePlaylist CurrentPlaylist = null!;
+        public static string PlaylistOwnerID = "";
         public static int playlistResult = 0;
         public static int songResult = 0;
-
+        public static bool IsPremium = false;
 
         public static SpotifyClient spotify;
         private static EmbedIOAuthServer _server;
@@ -44,7 +47,7 @@ namespace TuneSaber.Core.Spotify
             Plugin.Log.Notice("event subscribed");
             var request = new LoginRequest(_server.BaseUri, "8f6a2395551c45588496c7e25a0e2311", LoginRequest.ResponseType.Code)
             {
-                Scope = new List<string> { Scopes.PlaylistModifyPrivate, Scopes.PlaylistReadPrivate, Scopes.UserLibraryModify, Scopes.UserLibraryRead, Scopes.PlaylistModifyPublic, Scopes.PlaylistReadCollaborative, Scopes.UserFollowModify, Scopes.UserFollowRead }
+                Scope = new List<string> { Scopes.PlaylistModifyPrivate, Scopes.PlaylistReadPrivate, Scopes.UserLibraryModify, Scopes.UserLibraryRead, Scopes.PlaylistModifyPublic, Scopes.PlaylistReadCollaborative, Scopes.UserFollowModify, Scopes.UserFollowRead, Scopes.UserModifyPlaybackState, Scopes.UserReadCurrentlyPlaying, Scopes.UserReadPlaybackPosition, Scopes.UserReadPlaybackState }
             };
             Plugin.Log.Notice("request created");
             Uri urii = request.ToUri();
@@ -65,20 +68,35 @@ namespace TuneSaber.Core.Spotify
                 Plugin.Log.Info("config created");
                 var tokenResponse = await new OAuthClient(config).RequestToken(
                     new AuthorizationCodeTokenRequest(
-                        "8f6a2395551c45588496c7e25a0e2311", "imagine wanting my key KEKW", response.Code, urii)
+                        "8f6a2395551c45588496c7e25a0e2311", "not going to get my key dingus", response.Code, urii)
                     );
-                Plugin.Log.Info("logged in");
+                
                 spotify = new SpotifyClient(tokenResponse.AccessToken);
+                var f = await spotify.UserProfile.Current();
+                CurrentUser = f;
+                Plugin.Log.Info("logged in " + f.DisplayName);
+                
+                switch (f.Product){
+                    case null:
+                        IsPremium = false;
+                        Plugin.Log.Notice("no premium");
+                        break;
+                    case "premium":
+                        IsPremium = true;
+                        Plugin.Log.Notice("has premium");
+                        break;
+                }
+                await GetPlaylists(99);
+                CurrentPlaylist = playlists.ElementAt(Configuration.PluginConfig.Instance.ChosenPlaylist);
             }
             catch(Exception e)
             {
                 Plugin.Log.Notice("Initial login error \n");
-                Plugin.Log.Critical(e.Message.ToString());
+                Plugin.Log.Critical(e.ToString());
                 SearchMenu.instance.RelogImage.color = Color.red;
             }
-            await GetPlaylists(99);
+            
         }
-
         static public async Task<FullTrack> GetQuery(string query, int max)
         {
 
@@ -138,7 +156,6 @@ namespace TuneSaber.Core.Spotify
 
 
         }
-
         static public async Task<bool> IsSongLiked(string songID)
         {
             try
@@ -156,12 +173,12 @@ namespace TuneSaber.Core.Spotify
                 return false;
             }
         }
-
         static public async Task<bool> IsSongInPlaylist(string songID, string playlistID) {
             try
             {
                 var spotify = await GetMyFuckingAPIShit();
                 var checkrequest = await spotify.Playlists.GetItems(playlistID);
+
                 //i'm about to commit a sin but i do not give a shit, i'll do it later
 
                 foreach (PlaylistTrack<IPlayableItem> item in checkrequest.Items)
@@ -198,7 +215,6 @@ namespace TuneSaber.Core.Spotify
             var tracksave = new LibrarySaveTracksRequest(list);
             await spotify.Library.SaveTracks(tracksave);
         }
-
         static public async Task DislikeSong(string songID)
         {
             var spotify = await GetMyFuckingAPIShit();
@@ -207,7 +223,6 @@ namespace TuneSaber.Core.Spotify
             var tracksave = new LibraryRemoveTracksRequest(list);
             await spotify.Library.RemoveTracks(tracksave);
         }
-
         static public async Task AddToPlaylist(FullTrack song, string playlistID)
         {
             var spotify = await GetMyFuckingAPIShit();
@@ -217,6 +232,19 @@ namespace TuneSaber.Core.Spotify
             var request = new PlaylistAddItemsRequest(songs);
 
             await spotify.Playlists.AddItems(playlistID, request);
+        }
+        public static bool CheckPlaylistAddAbility()
+        {
+            
+            switch (CurrentPlaylist.Owner.Id == CurrentUser.Id)
+            {
+                case true:
+                    SearchMenu.instance.AddPLButton.color = Color.white;
+                    return true;
+                case false:
+                    SearchMenu.instance.AddPLButton.color = Color.red;
+                    return false;
+            }
         }
         static public async Task RemoveFromPlaylist(FullTrack song, string playlistID)
         {
@@ -255,7 +283,6 @@ namespace TuneSaber.Core.Spotify
                 return cock.ElementAt(0);
             }catch(Exception e) { Plugin.Log.Critical(e.ToString()); return false; }
         }
-
         static public async Task FollowArtist(FullArtist ar)
         {
             try
@@ -280,19 +307,23 @@ namespace TuneSaber.Core.Spotify
             var ufr = new UnfollowRequest(UnfollowRequest.Type.Artist, idlist);
             await spotify.Follow.Unfollow(ufr);
         }
-
         static public async Task CreatePlaylist(string name,  bool pub, bool collab, string description = null)
         {
             var spotify = await GetMyFuckingAPIShit();
-
+            Plugin.Log.Notice("Creating Playlist " + name);
             PlaylistCreateRequest plcr = new PlaylistCreateRequest(name);
             if(description != null) { plcr.Description = description; }
             plcr.Collaborative = collab;
             plcr.Public = pub;
             var user = await spotify.UserProfile.Current();
-            await spotify.Playlists.Create(user.Id, plcr);
+            try
+            {
+                await spotify.Playlists.Create(user.Id, plcr);
+            }
+            catch(Exception e) { Plugin.Log.Critical(e.ToString()); }
+            
         }
-        static public async Task EditPlaylist(string id, string name, bool pub, bool collab, string description = null)
+        static public async Task EditPlaylist(string id, string name, bool pub, bool collab, string description)
         {
             var spotify = await GetMyFuckingAPIShit();
 
@@ -301,7 +332,50 @@ namespace TuneSaber.Core.Spotify
             if(description != null) { plcdr.Description = description; }
             plcdr.Collaborative = collab;
             plcdr.Public = pub;
-            await spotify.Playlists.ChangeDetails(id, plcdr);
+            Plugin.Log.Notice("editing playlist " + name + pub + collab + description);
+            try { await spotify.Playlists.ChangeDetails(id, plcdr); }
+            catch(Exception e) { Plugin.Log.Critical(e.ToString()); }
+        }
+        static public async Task UnfollowPlaylist(string id)
+        {
+            var spotify = await GetMyFuckingAPIShit();
+            await spotify.Follow.UnfollowPlaylist(id);
+        }
+        static public async Task PlaybackControl(int control)
+        {
+            var spotify = await GetMyFuckingAPIShit();
+            if (control == 0) { await spotify.Player.PausePlayback(); }
+            if (control == 1) { await spotify.Player.ResumePlayback(); }
+            if (control == 2) { await spotify.Player.SkipPrevious(); }
+            if (control == 3) { await spotify.Player.SkipNext(); }
+        }
+        static public async Task<bool> IsPlayingBack() {
+            var spotify = await GetMyFuckingAPIShit();
+            var playing = await spotify.Player.GetCurrentPlayback();
+            return playing.IsPlaying;
+        }
+        static public async Task<FullTrack> GetPlayback()
+        {
+            var spotify = await GetMyFuckingAPIShit();
+            var pb = await spotify.Player.GetCurrentPlayback();
+            FullTrack tr = (FullTrack)pb.Item;
+            return tr;
+        }
+        static public async Task SeekTo(int ms)
+        {
+            var spotify = await GetMyFuckingAPIShit();
+            long pos = Convert.ToInt64(ms.ToString());
+            var pstr = new PlayerSeekToRequest(pos);
+            await spotify.Player.SeekTo(pstr);
+        }
+        static public async Task AddQueue(FullTrack track)
+        {
+            var spotify = await GetMyFuckingAPIShit();
+            var patqr = new PlayerAddToQueueRequest(track.Uri);
+            try { await spotify.Player.AddToQueue(patqr); }catch(Exception e)
+            {
+                Plugin.Log.Critical(e.ToString());
+            }
         }
     }
 }

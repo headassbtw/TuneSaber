@@ -19,7 +19,8 @@ using System.Linq;
 
 namespace TuneSaber
 {
-    public class SearchMenu : PersistentSingleton<SearchMenu>
+
+    public class SearchMenu : NotifiableSingleton<SearchMenu>
     {
         public string currentID = "";
         public static string currentTitle = "";
@@ -38,19 +39,81 @@ namespace TuneSaber
         [UIComponent("like-image")] private Image LikeImage = null!;
         [UIComponent("add-image")] private Image AddImage = null!;
         [UIComponent("relog-image")] public Image RelogImage = null!;
+        [UIComponent("playlist-image")] public Image AddPLButton = null!;
+        [UIComponent("queue-image")] public Image QueueImage = null!;
         [UIComponent("song-background-image")] private ImageView SongBGImage = null!;
         //[UIComponent("artists-background-image")] private ImageView ArtistsBGImage = null!;
-        
+
+        [UIComponent("artists-panel")] public HorizontalOrVerticalLayoutGroup ArtistsPanel = null!;
+        [UIComponent("twitch-panel")] public HorizontalOrVerticalLayoutGroup TwitchPanel = null!;
+
         [UIComponent("likeselected")] private Button LikeButton;
         [UIComponent("addselected")] private Button AddButton;
         [UIComponent("follow-button")] private Button FollowButton;
         [UIComponent("relog-button")] public Button RelogButton;
+        [UIComponent("queue-button")] public Button QueueButton;
         [UIValue("source-url1")] public string Image1 = "";
         [UIValue("selectedurl")] public string SelectedURL = "";
         [UIComponent("song-tab")] public VerticalLayoutGroup SongTab;
         [UIComponent("top-left")] public VerticalLayoutGroup TopLeft;
         [UIComponent("top-middle")] public VerticalLayoutGroup TopMiddle;
         [UIComponent("ArtistList")] public CustomListTableData customListTableData;
+
+
+        //twitch stuffs
+        [UIValue("twitch-permission-choices")] public List<object> options = new object[] { "Everyone", "VIP", "VIP+", "Mod", "Broadcaster" }.ToList();
+        [UIComponent("twitch-image")] public Image TwitchImage = null!;
+        [UIComponent("twitch-button")] public Button TwitchButton;
+        [UIValue("song-bool")] public bool TwitchSongBool = Configuration.PluginConfig.Instance.SongCommandEnabled;
+        [UIValue("song-perm-choice")] private string SongPermChoice = Configuration.PluginConfig.Instance.SongCommandPerm;
+        [UIValue("playlist-perm-choice")] private string PlaylistPermChoice = Configuration.PluginConfig.Instance.PlaylistCommandPerm;
+        [UIValue("admin-perm-choice")] private string AdminPermChoice = Configuration.PluginConfig.Instance.TwitchAdminLevel;
+        [UIValue("playlist-bool")] public bool TwitchPlaylistBool = Configuration.PluginConfig.Instance.PlaylistCommandEnabled;
+
+        [UIAction("twitchConfirm")]
+        public void ConfirmTwitchSettings()
+        {
+            Configuration.PluginConfig.Instance.SongCommandEnabled = TwitchSongBool;
+            Configuration.PluginConfig.Instance.SongCommandPerm = SongPermChoice;
+            Configuration.PluginConfig.Instance.PlaylistCommandEnabled = TwitchPlaylistBool;
+            Configuration.PluginConfig.Instance.PlaylistCommandPerm = PlaylistPermChoice;
+            Configuration.PluginConfig.Instance.TwitchAdminLevel = AdminPermChoice;
+            TwitchPanel.gameObject.SetActive(true);
+            ArtistsPanel.gameObject.SetActive(false);
+        }
+        [UIAction("show-twitch")]
+        private void ShowTwitch()
+        {
+            TwitchPanel.gameObject.SetActive(false);
+            ArtistsPanel.gameObject.SetActive(true);
+        }
+
+        [UIAction("twitch-settings")]
+        public void TwitchSettings()
+        {
+
+        }
+        private string _text = "something broke";
+        [UIValue("addbuttonhoverhint")]
+        public string AddHoverHint
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIValue("queuehoverhint")]
+        public string QueueHoverHint
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         private Image placeholder = null!;
 
@@ -85,7 +148,11 @@ namespace TuneSaber
             Plugin.Log.Info("button pushed");
             ButtonFollow();
         }
-        
+        [UIAction("addtoqueue")]
+        public async Task AddToQueue()
+        {
+            await Interaction.AddQueue(CurrentTrack);
+        }
         private async Task ButtonFollow()
         {
             Plugin.Log.Notice("ButtonFollow()");
@@ -242,6 +309,20 @@ namespace TuneSaber
 
         }
 
+        private void MPevents_levelselected(object sender,MultiplayerExtensions.SelectedBeatmapEventArgs arg2)
+        {
+            var song = SongCore.Loader.GetLevelById(arg2.LevelId);
+
+            if (song.songSubName.Contains(" remix") || song.songSubName.Contains(" Remix") || song.songSubName.Contains(" mix") || song.songSubName.Contains(" Mix"))
+            {
+                _ = shitfuck(song.songName, song.songAuthorName, song.songSubName, 3);
+            }
+            else
+            {
+                _ = shitfuck(song.songName, song.songAuthorName, "", 3);
+            }
+            Reset();
+        }
         
         private async Task<bool> shitfuck(string song, string artist, string mix, int max)
         {
@@ -255,6 +336,7 @@ namespace TuneSaber
                 Plugin.Log.Info("No Results");
                 await FillSongInfo("No Results.", "");
                 SongBGImage.SetImage("");
+                SongBGImage.color = Color.clear;
                 currentTitle = "sdaijfmchiasoduvbfiusadfv";
                 return false;
             }
@@ -265,6 +347,7 @@ namespace TuneSaber
                     CurrentTrack = track;
                     currentID = track.Id.ToString();
                     SongBGImage.SetImage(track.Album.Images.ElementAt(0).Url.ToString());
+                    SongBGImage.color = Color.white;
                     SongBGImage.color0 = Color.clear;
                     SongBGImage.color1 = Color.white;
                     currentURL = track.ExternalUrls.Values.ElementAt(0);
@@ -343,6 +426,7 @@ namespace TuneSaber
                     ars = await Gib(track);
                     GimmieArtists(ars);
                     await CheckFollow();
+                    Interaction.CheckPlaylistAddAbility();
                     EnableButtons();
                     switch (added)
                     {
@@ -396,16 +480,36 @@ namespace TuneSaber
             }
         }
 
+        
+
         [UIAction("#post-parse")]
         public void PostParse()
         {
+            TwitchPanel.gameObject.SetActive(false);
             Reset();
+            switch (Interaction.IsPremium)
+            {
+                case true:
+                    QueueButton.enabled = true;
+                    QueueButton.interactable = true;
+                    QueueHoverHint = "Add to playback queue";
+                    break;
+                case false:
+                    QueueButton.enabled = false;
+                    QueueButton.interactable = false;
+                    QueueHoverHint = "Playback queue is not\nmodifiable without premium";
+                    break;
+            }
+            
             RelogImage.SetImage("TuneSaber.Icons.relog.png");
             AddImage.SetImage("TuneSaber.Icons.AddToPlaylist.png");
+            QueueImage.SetImage("TuneSaber.Icons.AddToQueue.png");
+            LikeImage.SetImage("TuneSaber.Icons.heart.png");
             SongBGImage.color0 = new Color(1, 1, 1, 0.2f);
             SongBGImage.color1 = new Color(1, 1, 1, 0.8f);
             SongBGImage.SetField("_gradient", true);
             SongBGImage.SetField("_gradientDirection", HMUI.ImageView.GradientDirection.Vertical);
+            Interaction.GetPlaylists(99);
             Plugin.Log.Notice("PostParse");
             Material RoundedEdge = Resources.FindObjectsOfTypeAll<Material>().Where(m => m.name == "UINoGlowRoundEdge").First();
             //ArtistsBGImage.transform.localScale = new Vector3(0, 0, 0);
@@ -418,6 +522,12 @@ namespace TuneSaber
         #region backend commands
         public void AddTab()
         {
+            if(Configuration.PluginConfig.Instance.UsingMultiExtentions)
+            {
+                MultiplayerExtensions.MPEvents.BeatmapSelected += MPevents_levelselected;
+                Plugin.Log.Info("multiplayer event subscribed");
+            }
+
             BSEvents.levelSelected += BSEvents_levelSelected;
             Plugin.Log.Debug("Adding tab");
             GameplaySetup.instance.AddTab("TuneSaber", "TuneSaber.SearchMenu.search-menu-spotify.bsml", this);
@@ -425,6 +535,10 @@ namespace TuneSaber
 
         public void RemoveTab()
         {
+            if (Configuration.PluginConfig.Instance.UsingMultiExtentions)
+            {
+                MultiplayerExtensions.MPEvents.BeatmapSelected -= MPevents_levelselected;
+            }
             BSEvents.levelSelected -= BSEvents_levelSelected;
             Plugin.Log.Debug("Removing tab");
             GameplaySetup.instance.RemoveTab("TuneSaber");
@@ -474,6 +588,7 @@ namespace TuneSaber
             FollowButton.interactable = false;
             LikeButton.interactable = false;
             AddButton.interactable = false;
+            QueueButton.interactable = false;
             AddImage.color = Color.clear;
             LikeImage.color = Color.clear;
             ColorButton(LikeButton, Color.clear);
@@ -481,9 +596,19 @@ namespace TuneSaber
         }
         private void EnableButtons()
         {
+            QueueButton.interactable = Interaction.IsPremium;
             FollowButton.interactable = true;
             LikeButton.interactable = true;
-            AddButton.interactable = true;
+            switch (Interaction.CheckPlaylistAddAbility())
+            {
+                case true:
+                    AddButton.interactable = true;
+                    AddHoverHint = "Add selected song to playlist\n(but not remove it)";
+                    break;
+                case false:
+                    AddHoverHint = "You do not own the current playlist";
+                    break;
+            }
         }
         #endregion
     }

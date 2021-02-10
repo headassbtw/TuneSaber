@@ -1,0 +1,26 @@
+﻿<horizontal>
+	<vertical>
+		<horizontal bg='panel-top'>
+			<text text='Playback Controls' font-zise='10'/>
+		</horizontal>
+		<text id='song-title-text' font-size='8'/>
+		<text id='song-artist-text' font-size='5'/>
+		<horizontal>
+			<text id='left-time-text' text='0:00'/>
+			<slider-setting text='' pref-width='60' pad-left='70' id='time-bar' on-change='timebar-seek-to'/>
+			<text id='right-time-text' text='0:00'/>
+		</horizontal>
+		<horizontal>
+			<button pref-width='20' pref-height='20' on-click='rw' id='rw-button'>
+				<image preserve-aspect='true' pref-width='19' pref-height='19' id='rw-image'/>
+			</button>
+			<button pref-width='20' pref-height='20' on-click='playpause' id='pause-button'>
+				<image preserve-aspect='true' pref-width='19' pref-height='19' id='playpause-image'/>
+			</button>
+			<button pref-width='20' pref-height='20' on-click='ffw' id='ffw-button'>
+				<image preserve-aspect='true' pref-width='19' pref-height='19' id='ffw-image'/>
+			</button>
+			<button text='refresh' pref-width='20' pref-height='20' on-click='refresh' hover-hint='If the time bar stops moving, click this'/>
+		</horizontal>
+	</vertical>
+</horizontal>

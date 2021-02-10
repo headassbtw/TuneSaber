@@ -31,6 +31,7 @@ namespace TuneSaber
             Instance = this;
             Log = logger;
             Log.Info("TuneSaber initialized.");
+            
             //Auth.Main();
             //Log.Info("tried to start main.");
         }
@@ -40,18 +41,62 @@ namespace TuneSaber
         [Init]
         public void InitWithConfig(Config conf)
         {
-            SearchMenu.instance.AddTab();
+            
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
+            SearchMenu.instance.AddTab();
             Log.Debug("Config loaded");
+
+            
         }
         #endregion
 
         [OnStart]
         public void OnApplicationStart()
         {
+            //checking to see if multiplayer extentions is installed, in order to use the utilities it has
+            var plugins = IPA.Loader.PluginManager.EnabledPlugins.ToList();
+            try
+            {
+                Configuration.PluginConfig.Instance.UsingMultiExtentions = false;
+                Configuration.PluginConfig.Instance.UsingChatCore = false;
+                foreach (var plugin in plugins)
+                {
+                    if(!Configuration.PluginConfig.Instance.UsingMultiExtentions)
+                    {
+                        switch (plugin.Name == "MultiplayerExtensions")
+                        {
+                            case true:
+                                Configuration.PluginConfig.Instance.UsingMultiExtentions = true;
+                                Log.Debug("MultiplayerExtentions Found");
+                                break;
+                            case false:
+                                Configuration.PluginConfig.Instance.UsingMultiExtentions = false;
+                                break;
+                        }
+                    }
+                    
+                    if (!Configuration.PluginConfig.Instance.UsingChatCore)
+                    {
+                        switch (plugin.Name == "ChatCore")
+                        {
+                            case true:
+                                Configuration.PluginConfig.Instance.UsingChatCore = true;
+                                var es = new ExclamationSong();
+                                es.Start();
+                                Log.Debug("ChatCore Found");
+                                break;
+                            case false:
+                                Configuration.PluginConfig.Instance.UsingChatCore = false;
+                                break;
+                        }
+                    }
+                    
+                }
+            }
+            catch (Exception e) { Log.Critical("Optional Depencency Detection Error: " + e.ToString()); }
+            SearchMenu.instance.AddTab();
 
-            var es = new ExclamationSong();
-            es.Start();
+
             Views.UICreator.CreateMenu();
             BS_Utils.Utilities.BSEvents.OnLoad();
             Log.Debug("OnApplicationStart");
