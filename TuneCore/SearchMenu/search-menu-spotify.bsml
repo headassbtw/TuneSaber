@@ -116,7 +116,7 @@
 					</button>
 				</horizontal>
 				<horizontal>
-					<button on-click='twitch-settings' text='' id='twitch-button' hover-hint='twitch integration settings'>
+					<button on-click='show-twitch' text='' id='twitch-button' hover-hint='~twitchhoverhint'>
 						<image preserve-aspect='true' pad='1' pref-width='4' pref-height='4' id='twitch-image'/>
 					</button>
 				</horizontal>
@@ -126,7 +126,7 @@
 					</button>
 				</horizontal>
 				<horizontal>
-					<button text='O' on-click='hide-twitch'>
+					<button text=''>
 						
 					</button>
 				</horizontal>

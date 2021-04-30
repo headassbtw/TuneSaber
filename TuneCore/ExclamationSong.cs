@@ -16,14 +16,20 @@ namespace TuneSaber
         public string Usernamequestionmark = "";
         public string channel = Configuration.PluginConfig.Instance.ChannelName;
         public ChatCore.Services.Twitch.TwitchService twitchService;
+        bool c = false;
         //public ChatCoreInstance streamCore = ChatCoreInstance.Create();
         public void Start()
         {
-            var streamCore = ChatCoreInstance.Create();
-            var streamingService = streamCore.RunAllServices();
-            twitchService = streamingService.GetTwitchService();
-            streamingService.OnLogin += StreamingService_OnLogin;
-            streamingService.OnTextMessageReceived += StreamServiceProvider_OnMessageReceived;
+            if (!c)
+            {
+                Plugin.Log.Notice("Twitch Instance Created");
+                var streamCore = ChatCoreInstance.Create();
+                var streamingService = streamCore.RunAllServices();
+                twitchService = streamingService.GetTwitchService();
+                streamingService.OnLogin += StreamingService_OnLogin;
+                streamingService.OnTextMessageReceived += StreamServiceProvider_OnMessageReceived;
+                c = true;
+            }
 
         }
         public void StreamingService_OnLogin(IChatService svc)
@@ -37,6 +43,11 @@ namespace TuneSaber
         }
         public void StreamServiceProvider_OnMessageReceived(IChatService svc, IChatMessage msg)
         {
+            _ = TwitchMessageGotten(svc, msg);
+        }
+
+        public async Task TwitchMessageGotten(IChatService svc, IChatMessage msg)
+        {
             if (svc is ChatCore.Services.Twitch.TwitchService twitchService)
             {
                 if (msg.Message.Contains(Configuration.PluginConfig.Instance.SongChatCommand) && msg.Message.Substring(0, Configuration.PluginConfig.Instance.SongChatCommand.Length).Equals(Configuration.PluginConfig.Instance.SongChatCommand))
@@ -47,7 +58,7 @@ namespace TuneSaber
                             switch (HasPerms(msg.Sender, 1))
                             {
                                 case true:
-                                    string r = GetDatMFSong().Result;
+                                    string r = await GetDatMFSong();
                                     twitchService.SendTextMessage(r, channel);
                                     break;
                                 case false:
@@ -68,7 +79,7 @@ namespace TuneSaber
                             switch (HasPerms(msg.Sender, 2))
                             {
                                 case true:
-                                    string r = GetDatMFPlaylist().Result;
+                                    string r = await GetDatMFPlaylist();
                                     twitchService.SendTextMessage(r, channel);
                                     break;
                                 case false:

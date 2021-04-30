@@ -4,7 +4,7 @@
 			<button text='Refresh' id='refbutton' click-event='get-playlists'>
 				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='refresh-image'/>
 			</button>
-			<button text='' click-event='delete-playlist' id='delete-button'>
+			<button text='' click-event='delete-modal' id='delete-button'>
 				<image preserve-aspect='true' pad='1' pref-width='11' pref-height='11' id='delete-image'/>
 			</button>
 			<button text='Create' click-event='create-playlist'>
@@ -23,6 +23,17 @@
 			<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' id='playlist-image'/>
 		</vertical>
 	</horizontal>
+	<modal show-event='delete-modal' hide-event='confirmd' move-to-center="true" click-off-closes="true" size-delta-x="65" size-delta-y="50" font-size="5">
+		<vertical>
+			<horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
+				<text text='Delete?' align='Center' font-size='8'/>
+			</horizontal>
+			<horizontal>
+				<button click-event="confirmd" text="Cancel"/>
+				<button click-event="confirmd" on-click="delete-playlist" text="Confirm" />
+			</horizontal>
+		</vertical>
+	</modal>
 	<modal show-event="edit-playlist" hide-event="confirm" move-to-center="true" click-off-closes="true" size-delta-x="95" size-delta-y="70" font-size="5">
 		<vertical>
 			<horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>

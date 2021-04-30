@@ -141,7 +141,8 @@ namespace TuneSaber.ViewControllers
 
         public void SetupList()
         {
-            Core.Spotify.Interaction.GetPlaylists(99);
+            Plugin.Log.Notice("SetupList");
+            _ = Core.Spotify.Interaction.GetPlaylists(99);
             customListTableData.data.Clear();
 
             
@@ -185,6 +186,7 @@ namespace TuneSaber.ViewControllers
         [UIAction("delete-playlist")]
         public async Task Delet()
         {
+            Plugin.Log.Notice("I'm trying ok!");
             await Core.Spotify.Interaction.EditPlaylist(Configuration.PluginConfig.Instance.PlaylistID, "to be deleted", false, false, "i hate the API too");
             await Core.Spotify.Interaction.UnfollowPlaylist(Configuration.PluginConfig.Instance.PlaylistID);
             await GetPlaylists(99);
@@ -194,6 +196,7 @@ namespace TuneSaber.ViewControllers
         [UIAction("editPlaylist")]
         public async Task EditPlaylist()
         {
+            
             await Core.Spotify.Interaction.EditPlaylist(Configuration.PluginConfig.Instance.PlaylistID, ENameSetting.text.text, EPublic, ECollab, EDescSetting.text.text);
             await GetPlaylists(99);
             SetupList();

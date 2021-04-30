@@ -3,11 +3,12 @@
   "id": "TuneSaber",
   "name": "TuneSaber",
   "author": "headassbtw",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.2.0",
+  "description": "A Beat Saber mod to interact with music services in various ways",
   "gameVersion": "1.13.2",
   "dependsOn": {
-    "BSIPA": "^4.0.5"
+    "BSIPA": "^4.0.5",
+    "BeatSaberMarkupLanguage": "^1.4.5"
   },
   "features": []
 }

@@ -19,7 +19,7 @@ namespace TuneSaber
     {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
-
+        public bool PluginsSearched = false;
         [Init]
         /// <summary>
         /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
@@ -31,7 +31,7 @@ namespace TuneSaber
             Instance = this;
             Log = logger;
             Log.Info("TuneSaber initialized.");
-            
+            PluginsSearched = false;
             //Auth.Main();
             //Log.Info("tried to start main.");
         }
@@ -41,17 +41,16 @@ namespace TuneSaber
         [Init]
         public void InitWithConfig(Config conf)
         {
-            
-            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             SearchMenu.instance.AddTab();
+            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
+            
             Log.Debug("Config loaded");
 
             
         }
         #endregion
-
-        [OnStart]
-        public void OnApplicationStart()
+        bool c = false;
+        public void CheckOptionalDependencies()
         {
             //checking to see if multiplayer extentions is installed, in order to use the utilities it has
             var plugins = IPA.Loader.PluginManager.EnabledPlugins.ToList();
@@ -61,12 +60,13 @@ namespace TuneSaber
                 Configuration.PluginConfig.Instance.UsingChatCore = false;
                 foreach (var plugin in plugins)
                 {
-                    if(!Configuration.PluginConfig.Instance.UsingMultiExtentions)
+                    if (!Configuration.PluginConfig.Instance.UsingMultiExtentions)
                     {
                         switch (plugin.Name == "MultiplayerExtensions")
                         {
                             case true:
                                 Configuration.PluginConfig.Instance.UsingMultiExtentions = true;
+                                SearchMenu.instance.RegisterMulti();
                                 Log.Debug("MultiplayerExtentions Found");
                                 break;
                             case false:
@@ -74,15 +74,21 @@ namespace TuneSaber
                                 break;
                         }
                     }
-                    
+
                     if (!Configuration.PluginConfig.Instance.UsingChatCore)
                     {
                         switch (plugin.Name == "ChatCore")
                         {
                             case true:
                                 Configuration.PluginConfig.Instance.UsingChatCore = true;
-                                var es = new ExclamationSong();
-                                es.Start();
+                                if (!c)
+                                {
+                                    var es = new ExclamationSong();
+                                    es.Start();
+                                    SearchMenu.instance.TwitchButton.enabled = true;
+                                    SearchMenu.instance.TwitchHoverHint = "Twitch Settings";
+                                    c = true;
+                                }
                                 Log.Debug("ChatCore Found");
                                 break;
                             case false:
@@ -90,11 +96,18 @@ namespace TuneSaber
                                 break;
                         }
                     }
-                    
+
                 }
             }
             catch (Exception e) { Log.Critical("Optional Depencency Detection Error: " + e.ToString()); }
-            SearchMenu.instance.AddTab();
+        }
+
+
+
+        [OnStart]
+        public void OnApplicationStart()
+        {
+            
 
 
             Views.UICreator.CreateMenu();

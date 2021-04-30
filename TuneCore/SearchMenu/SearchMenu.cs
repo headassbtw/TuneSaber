@@ -30,8 +30,6 @@ namespace TuneSaber
         public static Material RoundedEdge = null!;
         public static List<SpotifyAPI.Web.FullArtist> ars = new List<SpotifyAPI.Web.FullArtist>();
         public static SpotifyAPI.Web.FullArtist CurrentArtist = null!;
-        /*[UIComponent("pl-name")] public TextMeshProUGUI PLName = null!;
-        [UIComponent("playlist-image")] public Image PlaylistImage = null!;*/
         [UIComponent("songtext")] private TextMeshProUGUI SongText = null!;
         [UIComponent("songsubtext")] private TextMeshProUGUI SongSubText = null!;
         [UIComponent("songsubsubtext")] private TextMeshProUGUI SongSubSubText = null!;
@@ -42,7 +40,6 @@ namespace TuneSaber
         [UIComponent("playlist-image")] public Image AddPLButton = null!;
         [UIComponent("queue-image")] public Image QueueImage = null!;
         [UIComponent("song-background-image")] private ImageView SongBGImage = null!;
-        //[UIComponent("artists-background-image")] private ImageView ArtistsBGImage = null!;
 
         [UIComponent("artists-panel")] public HorizontalOrVerticalLayoutGroup ArtistsPanel = null!;
         [UIComponent("twitch-panel")] public HorizontalOrVerticalLayoutGroup TwitchPanel = null!;
@@ -78,14 +75,16 @@ namespace TuneSaber
             Configuration.PluginConfig.Instance.PlaylistCommandEnabled = TwitchPlaylistBool;
             Configuration.PluginConfig.Instance.PlaylistCommandPerm = PlaylistPermChoice;
             Configuration.PluginConfig.Instance.TwitchAdminLevel = AdminPermChoice;
-            TwitchPanel.gameObject.SetActive(true);
-            ArtistsPanel.gameObject.SetActive(false);
-        }
-        [UIAction("show-twitch")]
-        private void ShowTwitch()
-        {
             TwitchPanel.gameObject.SetActive(false);
             ArtistsPanel.gameObject.SetActive(true);
+        }
+        [UIAction("show-twitch")]
+        public void ShowTwitch()
+        {
+            TwitchSongBool = Configuration.PluginConfig.Instance.SongCommandEnabled;
+            TwitchPlaylistBool = Configuration.PluginConfig.Instance.PlaylistCommandEnabled;
+            TwitchPanel.gameObject.SetActive(true);
+            ArtistsPanel.gameObject.SetActive(false);
         }
 
         [UIAction("twitch-settings")]
@@ -114,15 +113,26 @@ namespace TuneSaber
                 NotifyPropertyChanged();
             }
         }
+        [UIValue("twitchhoverhint")]
+        public string TwitchHoverHint
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                NotifyPropertyChanged();
+            }
+        }
+
 
         private Image placeholder = null!;
 
 
         [UIAction("refresh-login")]
-        private void RefreshLogin()
+        public async Task RefreshLogin()
         {
-            Interaction.Login().Wait();
-            Interaction.GetPlaylists(99).Wait();
+            await Interaction.Login();
+            await Interaction.GetPlaylists(99);
         }
 
         [UIAction("artistSelect")]
@@ -209,10 +219,10 @@ namespace TuneSaber
             switch (await Interaction.IsSongInPlaylist(CurrentTrack.Id, Configuration.PluginConfig.Instance.PlaylistID))
             {
                 case true:
+                    await Interaction.RemoveFromPlaylist(CurrentTrack, Configuration.PluginConfig.Instance.PlaylistID);
                     break;
                 case false:
                     await Interaction.AddToPlaylist(CurrentTrack, Configuration.PluginConfig.Instance.PlaylistID);
-                    AddButton.interactable = false;
                     break;
             }
         }
@@ -408,8 +418,7 @@ namespace TuneSaber
                         switch (await Interaction.IsSongInPlaylist(currentID, Configuration.PluginConfig.Instance.PlaylistID))
                         {
                             case true:
-                                AddImage.color = Color.gray;
-                                AddButton.interactable = false;
+                                AddImage.color = Color.red;
                                 added = true;
                                 break;
                             case false:
@@ -485,6 +494,18 @@ namespace TuneSaber
         [UIAction("#post-parse")]
         public void PostParse()
         {
+            if (!Plugin.Instance.PluginsSearched) Plugin.Instance.CheckOptionalDependencies();
+            switch (Configuration.PluginConfig.Instance.UsingChatCore)
+            {
+                case true:
+                    TwitchHoverHint = "Twitch Settings";
+                    TwitchButton.enabled = true;
+                    break;
+                case false:
+                    TwitchHoverHint = "ChatCore not found,\nplease install ChatCore\nto use twitch features";
+                    TwitchButton.enabled = false;
+                    break;
+            }
             TwitchPanel.gameObject.SetActive(false);
             Reset();
             switch (Interaction.IsPremium)
@@ -520,14 +541,18 @@ namespace TuneSaber
 
 
         #region backend commands
-        public void AddTab()
+        public void RegisterMulti()
         {
-            if(Configuration.PluginConfig.Instance.UsingMultiExtentions)
+            if (Configuration.PluginConfig.Instance.UsingMultiExtentions)
             {
                 MultiplayerExtensions.MPEvents.BeatmapSelected += MPevents_levelselected;
                 Plugin.Log.Info("multiplayer event subscribed");
             }
+        }
 
+
+        public void AddTab()
+        {
             BSEvents.levelSelected += BSEvents_levelSelected;
             Plugin.Log.Debug("Adding tab");
             GameplaySetup.instance.AddTab("TuneSaber", "TuneSaber.SearchMenu.search-menu-spotify.bsml", this);
