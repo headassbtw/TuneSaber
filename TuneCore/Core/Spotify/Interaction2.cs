@@ -68,7 +68,7 @@ namespace TuneSaber.Core.Spotify
                 Plugin.Log.Info("config created");
                 var tokenResponse = await new OAuthClient(config).RequestToken(
                     new AuthorizationCodeTokenRequest(
-                        "8f6a2395551c45588496c7e25a0e2311", "not going to get my key dingus", response.Code, urii)
+                        "8f6a2395551c45588496c7e25a0e2311", "key goes here", response.Code, urii)
                     );
                 
                 spotify = new SpotifyClient(tokenResponse.AccessToken);
@@ -91,7 +91,7 @@ namespace TuneSaber.Core.Spotify
             }
             catch(Exception e)
             {
-                Plugin.Log.Notice("Initial login error \n");
+                Plugin.Log.Notice("Initial login error, likely auth invalid or expired \n");
                 Plugin.Log.Critical(e.ToString());
                 SearchMenu.instance.RelogImage.color = Color.red;
             }

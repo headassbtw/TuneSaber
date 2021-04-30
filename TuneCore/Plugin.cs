@@ -53,6 +53,7 @@ namespace TuneSaber
         [OnStart]
         public void OnApplicationStart()
         {
+            
             //checking to see if multiplayer extentions is installed, in order to use the utilities it has
             var plugins = IPA.Loader.PluginManager.EnabledPlugins.ToList();
             try

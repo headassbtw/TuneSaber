@@ -62,7 +62,11 @@ namespace TuneSaber.ViewControllers
         public void Select(TableView _, int row)
         {
             Configuration.PluginConfig.Instance.ChosenPlaylist = row;
-            Configuration.PluginConfig.Instance.PlaylistID = Core.Spotify.Interaction.playlists.ElementAt(row).Id.ToString();
+            try
+            {
+                Configuration.PluginConfig.Instance.PlaylistID = Core.Spotify.Interaction.playlists.ElementAt(row).Id.ToString();
+            }
+            catch (Exception e) { }
 
             var localPl = Core.Spotify.Interaction.playlists.ElementAt(row);
             if(localPl.Images.Count > 0)
@@ -177,7 +181,7 @@ namespace TuneSaber.ViewControllers
             //PlaylistImage.SetImage(Core.Spotify.Interaction.playlists.ElementAt(selectedPlaylist).Images.ElementAt(0).Url.ToString());
             customListTableData.tableView.SelectCellWithIdx(selectedPlaylist);
             if (!customListTableData.tableView.visibleCells.Where(x => x.selected).Any())
-                customListTableData.tableView.ScrollToCellWithIdx(selectedPlaylist, TableViewScroller.ScrollPositionType.Beginning, true);
+                customListTableData.tableView.ScrollToCellWithIdx(selectedPlaylist, TableView.ScrollPositionType.Beginning, true);
             
             Select(customListTableData.tableView, selectedPlaylist);
         }

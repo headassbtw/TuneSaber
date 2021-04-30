@@ -472,7 +472,7 @@ namespace TuneSaber
                 customListTableData.tableView.SelectCellWithIdx(0);
                 CurrentArtist = ars.ElementAt(0);
             if (!customListTableData.tableView.visibleCells.Where(x => x.selected).Any())
-                customListTableData.tableView.ScrollToCellWithIdx(0, TableViewScroller.ScrollPositionType.Beginning, true);
+                customListTableData.tableView.ScrollToCellWithIdx(0, TableView.ScrollPositionType.Beginning, true);
             }
             catch (Exception e)
             {
