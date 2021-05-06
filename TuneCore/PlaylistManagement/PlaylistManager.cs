@@ -41,7 +41,24 @@ namespace TuneSaber.ViewControllers
         [UIComponent("edesc-setting")] public BeatSaberMarkupLanguage.Components.Settings.StringSetting EDescSetting;
         [UIValue("epublic-bool")] public bool EPublic = false;
         [UIValue("ecollab-bool")] public bool ECollab = false;
-
+        public int cpscInt
+        {
+            get => cpscInt;
+            set
+            {
+                cpscInt = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIValue("songCount")] public string currentPlaylistSongCount
+        {
+            get => cpscInt.ToString();
+            set
+            {
+                cpscInt = int.Parse(value);
+                NotifyPropertyChanged();
+            }
+        } 
         [UIComponent("refresh-image")] Image RefreshImage = null!;
         [UIComponent("delete-image")] Image DeleteImage = null!;
         [UIComponent("edit-image")] Image EditImage = null!;
@@ -77,6 +94,7 @@ namespace TuneSaber.ViewControllers
             {
                 PlaylistImage.SetImage("");
             }
+            cpscInt = localPl.Tracks.Items.Count;
             ENameSetting.text.text = Core.Spotify.Interaction.playlists.ElementAt(row).Name;
             ENameSetting.Text = Core.Spotify.Interaction.playlists.ElementAt(row).Name;
             ENameSetting.associatedValue.SetValue(Core.Spotify.Interaction.playlists.ElementAt(row).Name);

@@ -32,7 +32,15 @@ namespace TuneSaber.Views
                 {
                     SetTitle("Playlists");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_playlistViewController, _playbackViewController, _twitchViewController);
+                    ProvideInitialViewControllers(_playlistViewController, _playbackViewController);
+                }
+                if (!Configuration.PluginConfig.Instance.playbackControllerEnabled)
+                {
+                    SetLeftScreenViewController(null, ViewController.AnimationType.Out);
+                }
+                else if (Configuration.PluginConfig.Instance.playbackControllerEnabled && !firstActivation)
+                {
+                    SetLeftScreenViewController(_playbackViewController, ViewController.AnimationType.In);
                 }
             }
             catch (Exception e)

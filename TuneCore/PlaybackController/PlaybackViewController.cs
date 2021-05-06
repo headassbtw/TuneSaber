@@ -10,6 +10,8 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using UnityEngine.UI;
 using TuneSaber.Core.Spotify;
 using HMUI;
+using UnityEngine;
+using System.Collections;
 
 namespace TuneSaber.ViewControllers
 {
@@ -118,33 +120,46 @@ namespace TuneSaber.ViewControllers
             var pb = await Interaction.GetPlayback();
             
             var spotify = await Interaction.GetMyFuckingAPIShit();
-            
-            while (repeat == true)
-            {
-                var cpb = await spotify.Player.GetCurrentPlayback();
-                SongTitle.text = pb.Name;
-                SongArtist.text = pb.Artists.ElementAt(0).Name;
-                int refresh1 = pb.DurationMs - cpb.ProgressMs;
-                TimeBar.slider.maxValue = pb.DurationMs / 1000;
-                await Task.Delay(10000);
-            }
+
+            var cpb = await spotify.Player.GetCurrentPlayback();
+            SongTitle.text = pb.Name;
+            SongArtist.text = pb.Artists.ElementAt(0).Name;
+            int refresh1 = pb.DurationMs - cpb.ProgressMs;
+            TimeBar.slider.maxValue = pb.DurationMs / 1000;
         }
-        public async Task RefreshTime()
+        public IEnumerator TimeRefresh( SpotifyAPI.Web.FullTrack playback, SpotifyAPI.Web.CurrentlyPlayingContext context)
         {
-            var pb = await Interaction.GetPlayback();
-            var spotify = await Interaction.GetMyFuckingAPIShit();
-            while (repeat == true)
+            bool repeating = true;
+            float duration = playback.DurationMs / 1000;
+            
+            while (repeating)
             {
-                float duration = pb.DurationMs / 1000;
-                var cpb = await spotify.Player.GetCurrentPlayback();
-                float prog = cpb.ProgressMs / 1000;
+                float prog = context.ProgressMs / 1000;
                 float minutes = (duration - prog).Minutes();
                 float seconds = (duration - prog).Seconds();
                 string FormattedTime = minutes.ToString() + ":" + seconds.ToString();
                 RightTimeText.text = FormattedTime;
                 TimeBar.slider.value = prog;
-                await Task.Delay(50);
+                yield return new WaitForSecondsRealtime(1);
+                for(int i = 0; i < 5; i++)
+                {
+                    prog += 1;
+                    minutes = (duration - prog).Minutes();
+                    seconds = (duration - prog).Seconds();
+                    FormattedTime = minutes.ToString() + ":" + seconds.ToString();
+                    RightTimeText.text = FormattedTime;
+                    TimeBar.slider.value = prog;
+                    yield return new WaitForSecondsRealtime(1);
+                }
             }
+        }
+
+        public async Task RefreshTime()
+        {
+            var pb = await Interaction.GetPlayback();
+            var spotify = await Interaction.GetMyFuckingAPIShit();
+            var cpb = await spotify.Player.GetCurrentPlayback();
+            StartCoroutine(TimeRefresh(pb, cpb));
         }
 
     }

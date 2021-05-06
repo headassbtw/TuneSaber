@@ -15,8 +15,10 @@ namespace TuneSaber.Views
             if (!Created)
             {
                 MenuButton menuButton = new MenuButton("TuneSaber", "Manage playlists for TuneSaber", ShowFlow);
+                BSMLSettings.instance.AddSettingsMenu("TuneSaber", "TuneCore.Views.settings.bsml", TuneSaber.Views.SettingsController.instance);
                 MenuButtons.instance.RegisterButton(menuButton);
                 Created = true;
+                
             }
         }
         

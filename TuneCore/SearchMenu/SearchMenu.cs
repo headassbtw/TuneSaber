@@ -61,7 +61,7 @@ namespace TuneSaber
 
 
         //twitch stuffs
-        [UIValue("twitch-permission-choices")] public List<object> options = new object[] { "Everyone", "VIP", "VIP+", "Mod", "Broadcaster" }.ToList();
+        [UIValue("twitch-permission-choices")] public List<object> options = new object[] { "Everyone", "Sub", "VIP", "Mod", "Broadcaster" }.ToList();
         [UIComponent("twitch-image")] public Image TwitchImage = null!;
         [UIComponent("twitch-button")] public Button TwitchButton;
         [UIValue("song-bool")] public bool TwitchSongBool = Configuration.PluginConfig.Instance.SongCommandEnabled;
@@ -121,8 +121,8 @@ namespace TuneSaber
         [UIAction("refresh-login")]
         private void RefreshLogin()
         {
-            Interaction.Login().Wait();
-            Interaction.GetPlaylists(99).Wait();
+            System.Threading.Thread loginThread = new System.Threading.Thread(async => Interaction.Login());
+            loginThread.Start();
         }
 
         [UIAction("artistSelect")]
@@ -138,14 +138,13 @@ namespace TuneSaber
         {
             if (isSelected == true)
             {
-                Plugin.Log.Notice("Cell Hovered.");
+                
             }
         }
         
         [UIAction("follow-artist")]
         public void FollowArtist()
         {
-            Plugin.Log.Info("button pushed");
             ButtonFollow();
         }
         [UIAction("addtoqueue")]
@@ -174,10 +173,6 @@ namespace TuneSaber
 
         [UIAction("buttonaddfire")]
         private void ButtonAddFire()
-        {
-            _ = SongAdd();
-        }
-        private async Task SongAdd()
         {
             _ = ButtonAdd();
         }
@@ -209,6 +204,7 @@ namespace TuneSaber
             switch (await Interaction.IsSongInPlaylist(CurrentTrack.Id, Configuration.PluginConfig.Instance.PlaylistID))
             {
                 case true:
+                    //placeholder function for if i ever figure out how to remove things KEKW
                     break;
                 case false:
                     await Interaction.AddToPlaylist(CurrentTrack, Configuration.PluginConfig.Instance.PlaylistID);
@@ -452,8 +448,7 @@ namespace TuneSaber
             return ars;
         }
         public void GimmieArtists(List<SpotifyAPI.Web.FullArtist> artists)
-        {
-            
+        {   
             try
             {
                 customListTableData.data.Clear();
@@ -462,7 +457,7 @@ namespace TuneSaber
                 {
                     Plugin.Log.Notice("fetching artist " + artist.Name);
                     //ArtistsBGImage.SetImage(artist.Images.ElementAt(0).Url.ToString());
-                    var bruh = new CustomListTableData.CustomCellInfo(artist.Name, artist.Followers.Total.ToString() + " Followers");
+                    var bruh = new CustomListTableData.CustomCellInfo(artist.Name, Core.Tools.TextFormatting.NumberCommas(artist.Followers.Total.ToString()) + " Followers");
                     customListTableData.data.Add(bruh);
                     Plugin.Log.Notice("Added artist " + artist.Name + " to table");
                 }
@@ -508,8 +503,8 @@ namespace TuneSaber
             SongBGImage.color0 = new Color(1, 1, 1, 0.2f);
             SongBGImage.color1 = new Color(1, 1, 1, 0.8f);
             SongBGImage.SetField("_gradient", true);
-            SongBGImage.SetField("_gradientDirection", HMUI.ImageView.GradientDirection.Vertical);
-            Interaction.GetPlaylists(99);
+            SongBGImage.SetField("_gradientDirection", ImageView.GradientDirection.Vertical);
+            _ = Interaction.GetPlaylists(99);
             Plugin.Log.Notice("PostParse");
             Material RoundedEdge = Resources.FindObjectsOfTypeAll<Material>().Where(m => m.name == "UINoGlowRoundEdge").First();
             //ArtistsBGImage.transform.localScale = new Vector3(0, 0, 0);
@@ -522,23 +517,13 @@ namespace TuneSaber
         #region backend commands
         public void AddTab()
         {
-            if(Configuration.PluginConfig.Instance.UsingMultiExtentions)
-            {
-                MultiplayerExtensions.MPEvents.BeatmapSelected += MPevents_levelselected;
-                Plugin.Log.Info("multiplayer event subscribed");
-            }
-
-            BSEvents.levelSelected += BSEvents_levelSelected;
             Plugin.Log.Debug("Adding tab");
             GameplaySetup.instance.AddTab("TuneSaber", "TuneSaber.SearchMenu.search-menu-spotify.bsml", this);
+            BSEvents.levelSelected += BSEvents_levelSelected;
         }
 
         public void RemoveTab()
         {
-            if (Configuration.PluginConfig.Instance.UsingMultiExtentions)
-            {
-                MultiplayerExtensions.MPEvents.BeatmapSelected -= MPevents_levelselected;
-            }
             BSEvents.levelSelected -= BSEvents_levelSelected;
             Plugin.Log.Debug("Removing tab");
             GameplaySetup.instance.RemoveTab("TuneSaber");
@@ -565,6 +550,8 @@ namespace TuneSaber
             string L = "";
             SongText.text = L;
             SongArtist.text = L;
+            SongSubText.text = L;
+            SongSubSubText.text = L;
         }
         private async Task CheckFollow()
         {

@@ -28,6 +28,7 @@ namespace TuneSaber
         /// </summary>
         public void Init(IPALogger logger)
         {
+            SearchMenu.instance.AddTab();
             Instance = this;
             Log = logger;
             Log.Info("TuneSaber initialized.");
@@ -43,7 +44,7 @@ namespace TuneSaber
         {
             
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            SearchMenu.instance.AddTab();
+            
             Log.Debug("Config loaded");
 
             

@@ -94,9 +94,9 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Main.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="MultiplayerExtensions, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>False</Private>
+    <Reference Include="MultiplayerExtensions">
       <HintPath>$(BeatSaberDir)\Plugins\MultiplayerExtensions.dll</HintPath>
+      <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SongCore, Version=3.0.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -179,6 +179,7 @@
     <Compile Include="Configuration\InfoConfig.cs" />
     <Compile Include="Core\General\TwitchViewController.cs" />
     <Compile Include="Core\Spotify\Interaction2.cs" />
+    <Compile Include="Core\Tools\TextFormatting.cs" />
     <Compile Include="ExclamationSong.cs" />
     <Compile Include="PlaybackController\PlaybackViewController.cs" />
     <Compile Include="PlaylistManagement\PlaylistManager.cs" />
@@ -188,7 +189,6 @@
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="TuneSaberController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\BSMLModifiersController.cs" />
     <Compile Include="Views\SettingsController.cs" />
     <Compile Include="Views\TuneSaberFlowCoordinator.cs" />
     <Compile Include="Views\UICreator.cs" />
@@ -209,10 +209,6 @@
     <None Include="ILRepack.targets" />
     <EmbeddedResource Include="PlaybackController\PlaybackControls.bsml" />
     <None Include="TuneCore.csproj.user" Condition="Exists('TuneCore.csproj.user')" />
-    <EmbeddedResource Include="Views\BSMLViewController1.bsml">
-      <DependentUpon>BSMLModifiersController.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\modifiers.bsml" />
     <EmbeddedResource Include="Views\settings.bsml" />
     <EmbeddedResource Include="PlaylistManagement\PlaylistManager.bsml" />
   </ItemGroup>
@@ -231,9 +227,6 @@
     <PackageReference Include="Microsoft.AspNet.WebApi.Core">
       <Version>5.2.7</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\template.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\heart.png" />

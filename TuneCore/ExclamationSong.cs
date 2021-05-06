@@ -208,16 +208,13 @@ namespace TuneSaber
                     switch (Configuration.PluginConfig.Instance.PlaylistCommandPerm)
                     {
                         case "Mod":
-                            if (user.IsModerator || user.IsBroadcaster) { return true; }
-                            else { return false; }
+                            return (user.IsModerator || user.IsBroadcaster) ;
                         case "Broadcaster":
-                            if (user.IsBroadcaster) { return true; }
-                            else { return false; }
-                        case "VIP+":
-                            if (user.IsModerator || IsVip(user)) { return true; }
-                            else { return false; }
+                            return (user.IsBroadcaster) ;
                         case "VIP":
-                            return IsVip(user);
+                            return (user.IsModerator || IsVip(user) || user.IsBroadcaster) ;
+                        case "Sub":
+                            return (IsSub(user) || user.IsModerator || user.IsBroadcaster);
                         case "Everyone":
                             return true;
                     }
@@ -273,6 +270,18 @@ namespace TuneSaber
             }
             return false;
         }
+        public bool IsSub(IChatUser user)
+        {
+            foreach(IChatBadge badge in user.Badges)
+            {
+                if (badge.Id.Equals("TwitchGlobalBadge_subscriber"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public async Task SendErrorMessage(string type, string error)
         {
             twitchService.SendTextMessage(type + " Error: " + error, channel);

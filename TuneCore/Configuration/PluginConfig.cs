@@ -25,7 +25,7 @@ namespace TuneSaber.Configuration
         public virtual int ChosenPlaylist { get; set; } = 1;
         public virtual bool UsingMultiExtentions { get; set; } = false;
         public virtual bool UsingChatCore { get; set; } = false;
-
+        public virtual bool playbackControllerEnabled { get; set; } = false;
         /*
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

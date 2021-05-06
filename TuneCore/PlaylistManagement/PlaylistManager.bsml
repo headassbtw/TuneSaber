@@ -21,6 +21,8 @@
 		</vertical>
 		<vertical id='playlist-bg'>
 			<image preserve-aspect='true' pad='1' pref-width='25' pref-height='25' id='playlist-image'/>
+			<text text='Songs:'/>
+			<text text='' id='songCount'/>
 		</vertical>
 	</horizontal>
 	<modal show-event="edit-playlist" hide-event="confirm" move-to-center="true" click-off-closes="true" size-delta-x="95" size-delta-y="70" font-size="5">
