@@ -13,9 +13,8 @@
     <ItemGroup>
       <InputAssemblies Include="SpotifyAPI.Web.dll" />
 	  <InputAssemblies Include="SpotifyAPI.Web.Auth.dll" />
-		<InputAssemblies Include="EmbedIO.dll" />
-		<InputAssemblies Include="Swan.Lite.dll" />
-	  
+      <InputAssemblies Include="EmbedIO.dll" />
+      <InputAssemblies Include="Swan.Lite.dll" />
     </ItemGroup>
     <ItemGroup>
       <!-- Must be a fully qualified name -->

@@ -305,7 +305,7 @@ namespace TuneSaber
 
         }
 
-        private void MPevents_levelselected(object sender,MultiplayerExtensions.SelectedBeatmapEventArgs arg2)
+        /*private void MPevents_levelselected(object sender,MultiplayerExtensions.SelectedBeatmapEventArgs arg2)
         {
             var song = SongCore.Loader.GetLevelById(arg2.LevelId);
 
@@ -318,7 +318,7 @@ namespace TuneSaber
                 _ = shitfuck(song.songName, song.songAuthorName, "", 3);
             }
             Reset();
-        }
+        }*/
         
         private async Task<bool> shitfuck(string song, string artist, string mix, int max)
         {

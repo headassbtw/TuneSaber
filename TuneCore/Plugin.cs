@@ -28,7 +28,7 @@ namespace TuneSaber
         /// </summary>
         public void Init(IPALogger logger)
         {
-            SearchMenu.instance.AddTab();
+            
             Instance = this;
             Log = logger;
             Log.Info("TuneSaber initialized.");
@@ -54,7 +54,7 @@ namespace TuneSaber
         [OnStart]
         public void OnApplicationStart()
         {
-            
+            SearchMenu.instance.AddTab();
             //checking to see if multiplayer extentions is installed, in order to use the utilities it has
             var plugins = IPA.Loader.PluginManager.EnabledPlugins.ToList();
             try
